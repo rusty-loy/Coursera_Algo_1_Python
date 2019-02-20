@@ -3,13 +3,11 @@ Created on Feb 4, 2019
 
 @author: Rusty
 '''
-import random
 import statistics
 import math
 import matplotlib.pyplot as plt
-from _collections import defaultdict
 import numpy
-from collections import Counter
+from datetime import datetime
 
 class QuickUnion:
     """ Supports union/connection of two nodes.  Quickly finds if two nodes are connected. """
@@ -138,12 +136,14 @@ def run_percolation_samples(sample_size, grid_size):
 if __name__ == '__main__':
     
     sizes = []
-    grid_size = 500
+    grid_size = 1000
     sample_size = 2
+    start_time = datetime.now()
 
 #     import cProfile
 #     cProfile.run('run_percolation_samples(sample_size, grid_size)')
     run_percolation_samples(sample_size, grid_size)
 
+    print(datetime.now() - start_time)
     
     

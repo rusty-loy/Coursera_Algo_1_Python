@@ -135,7 +135,7 @@ def run_percolation_samples(sample_size, grid_size):
 if __name__ == '__main__':
     
     sizes = []
-    grid_size = 500
+    grid_size = 1000
     sample_size = 2
 
     start_time = datetime.now()
