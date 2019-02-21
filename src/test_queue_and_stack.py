@@ -11,7 +11,7 @@ import queue_and_stack
 
 class CommonTests:
     """ Common tests for all stack implementations """
-    
+
     def test_empty_is_empty(self):
         """ Stack should start out emtpy """
         self.assertTrue(self.stack.empty())
@@ -33,8 +33,9 @@ class CommonTests:
         self.assertEqual(self.stack.pop(), 'b')
         self.assertEqual(self.stack.pop(), 'a')
 
-    def _test_strings(self, stack1, stack2, reference):
-        """ Push a string unto one stack, then pop to another.  
+    @staticmethod
+    def _test_strings(stack1, stack2, reference):
+        """ Push a string unto one stack, then pop to another.
             When popped again, we should have the original string """
         [stack1.push(x) for x in reference]
 
@@ -44,18 +45,19 @@ class CommonTests:
         test = []
         while not stack2.empty():
             test.append(stack2.pop())
-        
+
         if isinstance(reference, str):
             return ''.join(test)
-        else:
-            return test
+
+        return test
+
 
 class StackLLTestCase(unittest.TestCase, CommonTests):
     """ Tests for stacks """
     def setUp(self):
         unittest.TestCase.setUp(self)
         self.stack = queue_and_stack.LLStack()
-    
+
     def test_pop_empty(self):
         """ popping an empty linked list give a none type error """
         with self.assertRaises(AttributeError):
@@ -63,9 +65,10 @@ class StackLLTestCase(unittest.TestCase, CommonTests):
 
     def test_strings(self):
         """ Try different sequence of characters with the stack """
-        self._test_strings(queue_and_stack.LLStack(), queue_and_stack.LLStack(), 
-                   'this is a long string!! msjhdtaisdhja  askjdlsjdklasjl END')
-        self._test_strings(queue_and_stack.LLStack(), queue_and_stack.LLStack(), 
+        self._test_strings(queue_and_stack.LLStack(), queue_and_stack.LLStack(),
+                           'this is a long string!! msjhdtaisdhja  \
+                           askjdlsjdklasjl END')
+        self._test_strings(queue_and_stack.LLStack(), queue_and_stack.LLStack(),
                            '12345')
         self._test_strings(queue_and_stack.LLStack(), queue_and_stack.LLStack(), '')
 
@@ -74,7 +77,7 @@ class StackArrayTestCase(unittest.TestCase, CommonTests):
     def setUp(self):
         unittest.TestCase.setUp(self)
         self.stack = queue_and_stack.ArrayStack()
-        
+
     def test_pop_empty(self):
         """ popping an empty array gives an index error """
         with self.assertRaises(IndexError):
@@ -82,11 +85,12 @@ class StackArrayTestCase(unittest.TestCase, CommonTests):
 
     def test_strings(self):
         """ Try different sequence of characters with the stack """
-        self._test_strings(queue_and_stack.ArrayStack(), queue_and_stack.ArrayStack(), 
-                   'this is a long string!! msjhdtaisdhja  askjdlsjdklasjl END')
-        self._test_strings(queue_and_stack.ArrayStack(), queue_and_stack.ArrayStack(), 
+        self._test_strings(queue_and_stack.ArrayStack(), queue_and_stack.ArrayStack(),
+                           'this is a long string!! msjhdtaisdhja  \
+                           askjdlsjdklasjl END')
+        self._test_strings(queue_and_stack.ArrayStack(), queue_and_stack.ArrayStack(),
                            '12345')
-        self._test_strings(queue_and_stack.ArrayStack(), queue_and_stack.ArrayStack(), 
+        self._test_strings(queue_and_stack.ArrayStack(), queue_and_stack.ArrayStack(),
                            '')
 
 
@@ -103,36 +107,39 @@ class StackWithMaxTestCase(unittest.TestCase, CommonTests):
 
     def test_ints(self):
         """ Try different sequence of characters with the stack """
-        self._test_strings(queue_and_stack.ArrayStack(), queue_and_stack.ArrayStack(), 
-                   range(20))
-        self._test_strings(queue_and_stack.ArrayStack(), queue_and_stack.ArrayStack(), 
-                           [1,99,5,108,22,87,-22])
-        self._test_strings(queue_and_stack.ArrayStack(), queue_and_stack.ArrayStack(), 
+        self._test_strings(queue_and_stack.ArrayStack(), queue_and_stack.ArrayStack(),
+                           range(20))
+        self._test_strings(queue_and_stack.ArrayStack(), queue_and_stack.ArrayStack(),
+                           [1, 99, 5, 108, 22, 87, -22])
+        self._test_strings(queue_and_stack.ArrayStack(), queue_and_stack.ArrayStack(),
                            [1])
 
     def test_single_max(self):
+        """ Test max function after a single push operation """
         self.stack.push(1)
         self.assertEqual(1, self.stack.max())
 
     def test_multiple_max(self):
+        """ Test max function after multiple push operations """
         pushes = [1, -1, -100, 100, 5, 1234, 666]
         maxes = [1, 1, 1, 100, 100, 1234, 1234]
-        
-        for item, max in zip(pushes, maxes):
+
+        for item, max_item in zip(pushes, maxes):
             self.stack.push(item)
-            self.assertEqual(max, self.stack.max())
-        
+            self.assertEqual(max_item, self.stack.max())
+
         while not self.stack.empty():
             self.assertEqual(maxes[-1], self.stack.max())
             self.stack.pop()
             maxes.pop()
+
 
 class QueueTestCase(unittest.TestCase):
     """ Tests for queues """
     def setUp(self):
         unittest.TestCase.setUp(self)
         self.queue = queue_and_stack.QueueWithStacks()
-  
+
     def test_empty_is_empty(self):
         """ Queue should start out emtpy """
         self.assertTrue(self.queue.empty())
@@ -167,13 +174,14 @@ class QueueTestCase(unittest.TestCase):
             test = []
             while not queue.empty():
                 test.append(queue.dequeue())
-            
+
             self.assertEqual(reference, ''.join(reference))
-            
-        _test(queue_and_stack.QueueWithStacks(), 
+
+        _test(queue_and_stack.QueueWithStacks(),
               'test long string !!!! askdmaksdklasdja    k !!!!')
-        _test(queue_and_stack.QueueWithStacks(), 
+        _test(queue_and_stack.QueueWithStacks(),
               '')
+
 
 if __name__ == '__main__':
     unittest.main()

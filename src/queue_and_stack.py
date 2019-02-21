@@ -82,8 +82,9 @@ class StackWithMax(ArrayStack):
         self.max_stack = ArrayStack()
 
     def max(self):
+        """ Return maximum value in the stack """
         return self.max_stack.peek()
-    
+
     def push(self, item):
         """ Push item onto stack """
         super().push(item)
