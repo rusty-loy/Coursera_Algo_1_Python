@@ -25,6 +25,7 @@ class CommonTests:
         """ A push followed by pop should return original item """
         self.stack.push('a')
         self.assertEqual(self.stack.pop(), 'a')
+        self.assertTrue(self.stack.empty())
 
     def test_reverse_order_pop(self):
         """ Two pushes should reverse order when popped """
@@ -32,6 +33,7 @@ class CommonTests:
         self.stack.push('b')
         self.assertEqual(self.stack.pop(), 'b')
         self.assertEqual(self.stack.pop(), 'a')
+        self.assertTrue(self.stack.empty())
 
     @staticmethod
     def _test_strings(stack1, stack2, reference):
@@ -175,13 +177,141 @@ class QueueTestCase(unittest.TestCase):
             while not queue.empty():
                 test.append(queue.dequeue())
 
-            self.assertEqual(reference, ''.join(reference))
+            self.assertEqual(reference, ''.join(test))
 
         _test(queue_and_stack.QueueWithStacks(),
               'test long string !!!! askdmaksdklasdja    k !!!!')
         _test(queue_and_stack.QueueWithStacks(),
               '')
 
+
+class LLDequeTestCase(unittest.TestCase):
+    """ Tests for linked list deque """
+    def setUp(self):
+        unittest.TestCase.setUp(self)
+        self.deque = queue_and_stack.LLDeque()
+
+    def test_empty_is_empty(self):
+        """ Deque should start out empty """
+        self.assertTrue(self.deque.empty())
+
+    def test_add_front(self):
+        """ add front should make queue not empty """
+        self.deque.add_front('a')
+        self.assertFalse(self.deque.empty())
+
+    def test_add_back(self):
+        """ add front should make queue not empty """
+        self.deque.add_front('a')
+        self.assertFalse(self.deque.empty())
+
+    def test_single_add_front(self):
+        """ Add front followed by a remove should return original item """
+        self.deque.add_front('a')
+        self.assertEqual(self.deque.remove_front(), 'a')
+        self.assertTrue(self.deque.empty())
+
+        # remove back should return same
+        self.deque.add_front('a')
+        self.assertEqual(self.deque.remove_back(), 'a')
+        self.assertTrue(self.deque.empty())
+
+    def test_single_add_back(self):
+        """ Add back followed by a remove should return original item """
+        self.deque.add_back('a')
+        self.assertEqual(self.deque.remove_back(), 'a')
+        self.assertTrue(self.deque.empty())
+
+        # remove front should return same
+        self.deque.add_back('a')
+        self.assertEqual(self.deque.remove_front(), 'a')
+        self.assertTrue(self.deque.empty())
+
+    def test_in_order_removal(self):
+        """ Two adds followed by remove on opposite side should be in order """
+        self.deque.add_front('a')
+        self.deque.add_front('b')
+        self.assertEqual(self.deque.remove_back(), 'a')
+        self.assertEqual(self.deque.remove_back(), 'b')
+        self.assertTrue(self.deque.empty())
+
+        self.deque.add_back('a')
+        self.deque.add_back('b')
+        self.assertEqual(self.deque.remove_front(), 'a')
+        self.assertEqual(self.deque.remove_front(), 'b')
+        self.assertTrue(self.deque.empty())
+
+    def test_reverse_order_removal(self):
+        """ Two adds followed by remove on same side should be in reverse order """
+        self.deque.add_front('a')
+        self.deque.add_front('b')
+        self.assertEqual(self.deque.remove_front(), 'b')
+        self.assertEqual(self.deque.remove_front(), 'a')
+        self.assertTrue(self.deque.empty())
+
+        self.deque.add_back('a')
+        self.deque.add_back('b')
+        self.assertEqual(self.deque.remove_back(), 'b')
+        self.assertEqual(self.deque.remove_back(), 'a')
+        self.assertTrue(self.deque.empty())
+
+    def test_dequeue_empty(self):
+        """ popping an empty deque gives an attribute error """
+        with self.assertRaises(AttributeError):
+            self.deque.remove_front()
+
+        with self.assertRaises(AttributeError):
+            self.deque.remove_back()
+
+    def test_dequeue_iteration(self):
+        """ Make sure iterating through the dequeue gives correct values """
+        reference = [129, 277, -93, 874, 9115, -8766, 8998, 5549, 10]
+        for item in reference:
+            self.deque.add_back(item)
+
+        for item1, item2 in zip(self.deque, reference):
+            self.assertEqual(item1, item2)
+
+
+class RandomizedQueueTestCase(unittest.TestCase):
+    """ Tests for queues """
+    def setUp(self):
+        unittest.TestCase.setUp(self)
+        self.queue = queue_and_stack.RandomizedQueue()
+
+    def test_empty_is_empty(self):
+        """ Queue should start out emtpy """
+        self.assertTrue(self.queue.empty())
+
+    def test_enqueue(self):
+        """ Enqueue should make queue not empty """
+        self.queue.enqueue('a')
+        self.assertFalse(self.queue.empty())
+
+    def test_single_dequeue(self):
+        """ An enqueue followed by a dequeue should return original item """
+        self.queue.enqueue('a')
+        self.assertEqual(self.queue.dequeue(), 'a')
+        self.assertTrue(self.queue.empty())
+
+    def test_dequeue_empty(self):
+        """ popping an empty queue gives an value error """
+        with self.assertRaises(ValueError):
+            self.queue.dequeue()
+
+    def test_strings(self):
+        """ Try range of numbers.  The order must be different but the values
+            must be the same """
+        reference = range(1000)
+
+        [self.queue.enqueue(x) for x in reference]
+        test = []
+        while not self.queue.empty():
+            test.append(self.queue.dequeue())
+
+        self.assertEqual(set(reference), set(test))
+        same_spots = sum(x == y for x, y in zip(reference, test))
+        self.assertLess(same_spots, 10, 'This is a stupid test.  It may fail.')
 
 if __name__ == '__main__':
     unittest.main()
